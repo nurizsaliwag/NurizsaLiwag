@@ -1,0 +1,128 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package exer2_3.liwag5;
+
+import java.util.Scanner;
+/**
+ *
+ * @author nliwag
+ */
+public class Liwag5 {
+
+     static class Employee {
+        private String id;
+        private String name;
+        private double hoursWorked;
+        private double hourlyRate;
+ 
+        static int employeeCount = 0;
+ 
+        Employee(String id, String name, double hoursWorked, double hourlyRate) {
+            this.id = id;
+            this.name = name;
+            this.hoursWorked = hoursWorked;
+            this.hourlyRate = hourlyRate;
+            employeeCount++;
+        }
+ 
+        double getGrossPay() {
+            if (hoursWorked <= 40) {
+                return hoursWorked * hourlyRate;
+            } else {
+                return (40 * hourlyRate) +
+                       ((hoursWorked - 40) * hourlyRate * 1.5);
+            }
+        }
+ 
+        double getTax() {
+            double gross = getGrossPay();
+ 
+            if (gross <= 10000) {
+                return gross * 0.05;
+            } else if (gross <= 20000) {
+                return gross * 0.10;
+            } else {
+                return gross * 0.15;
+            }
+        }
+ 
+        double getNetPay() {
+            return getGrossPay() - getTax();
+        }
+ 
+        void displayPayroll() {
+            System.out.println("\nEmployee ID: " + id);
+            System.out.println("Name: " + name);
+            System.out.printf("Gross Pay: %.2f%n", getGrossPay());
+            System.out.printf("Tax: %.2f%n", getTax());
+            System.out.printf("Net Pay: %.2f%n", getNetPay());
+        }
+    }
+ 
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+ 
+        int numberOfEmployees;
+ 
+        do {
+            System.out.print("Enter number of employees (1-10): ");
+            numberOfEmployees = input.nextInt();
+        } while (numberOfEmployees < 1 || numberOfEmployees > 10);
+ 
+        input.nextLine();
+ 
+        Employee[] employees = new Employee[numberOfEmployees];
+ 
+        for (int i = 0; i < numberOfEmployees; i++) {
+            System.out.println("\nEmployee " + (i + 1));
+ 
+            System.out.print("Enter ID: ");
+            String id = input.nextLine();
+ 
+            System.out.print("Enter full name: ");
+            String name = input.nextLine();
+ 
+            double hours;
+            do {
+                System.out.print("Enter hours worked: ");
+                hours = input.nextDouble();
+            } while (hours < 0);
+ 
+            double rate;
+            do {
+                System.out.print("Enter hourly rate: ");
+                rate = input.nextDouble();
+            } while (rate < 0);
+ 
+            input.nextLine();
+ 
+            employees[i] = new Employee(id, name, hours, rate);
+        }
+ 
+        System.out.println("\n===== PAYROLL SUMMARY =====");
+ 
+        double totalNetPay = 0;
+        Employee highest = employees[0];
+ 
+        for (int i = 0; i < numberOfEmployees; i++) {
+            employees[i].displayPayroll();
+ 
+            totalNetPay += employees[i].getNetPay();
+ 
+            if (employees[i].getNetPay() > highest.getNetPay()) {
+                highest = employees[i];
+            }
+        }
+ 
+        double averageNetPay = totalNetPay / numberOfEmployees;
+ 
+        System.out.println("\n===== OVERALL SUMMARY =====");
+        System.out.println("Highest Net Pay: " + highest.getNetPay());
+        System.out.printf("Average Net Pay: %.2f%n", averageNetPay);
+        System.out.println("Employee Count: " + Employee.employeeCount);
+ 
+        input.close();
+    }
+}
